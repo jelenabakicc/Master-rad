@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/performance_analysis"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Algorithm Spinner -->
+    <Spinner
+        android:id="@+id/spinner_performance_algorithm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Custom Array Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/edit_performance_array"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/custom_array"
+            android:inputType="text"/>
+
+        <Button
+            android:id="@+id/btn_run_benchmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/run_benchmark"
+            android:layout_marginStart="8dp"/>
+
+    </LinearLayout>
+
+    <!-- Toggle Button -->
+    <Button
+        android:id="@+id/btn_toggle_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/show_theory"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- ViewFlipper to switch between Theory and Chart -->
+    <ViewFlipper
+        android:id="@+id/view_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Theory View -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text_theory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:lineSpacingMultiplier="1.2"/>
+
+        </ScrollView>
+
+        <!-- Performance Charts View -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Execution Time Chart -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Execution Time (ms)"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"/>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/performance_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"/>
+
+                <!-- Swap Count Chart -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Number of Swaps"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:layout_marginTop="16dp"/>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/swap_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"/>
+
+                <!-- Comparison Count Chart -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Number of Comparisons"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:layout_marginTop="16dp"/>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/comparison_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </ViewFlipper>
+
+</LinearLayout>

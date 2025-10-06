@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sorting Visualizer</string>
+    <string name="visualize_button">Visualize Algorithms</string>
+    <string name="performance_button">Performance Analysis</string>
+    <string name="select_algorithm">Select Algorithm</string>
+    <string name="array_size">Array Size</string>
+    <string name="start_sort">Start</string>
+    <string name="pause_sort">Pause</string>
+    <string name="reset_sort">Reset</string>
+    <string name="speed">Speed</string>
+    <string name="array_length">Array Length</string>
+    <string name="custom_array">Custom Array (comma-separated)</string>
+    <string name="generate_random">Generate Random</string>
+    <string name="set_array">Set Array</string>
+    <string name="performance_analysis">Performance Analysis</string>
+    <string name="run_benchmark">Run Benchmark</string>
+    <string name="show_theory">Show Theory</string>
+    <string name="show_performance">Show Performance</string>
+
+    <!-- Algorithm Theory Texts -->
+    <string name="theory_bubble_sort">Bubble Sort\n\nTime Complexity: O(n²)\nSpace Complexity: O(1)\n\nBubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order. The pass through the list is repeated until the list is sorted.\n\nHow it works:\n1. Compare adjacent elements\n2. Swap if they are in wrong order\n3. Repeat for all elements\n4. After each pass, the largest element "bubbles up" to its correct position\n\nBest Case: O(n) - when array is already sorted\nWorst Case: O(n²) - when array is reverse sorted\nAverage Case: O(n²)\n\nStable: Yes\nIn-place: Yes</string>
+
+    <string name="theory_insertion_sort">Insertion Sort\n\nTime Complexity: O(n²)\nSpace Complexity: O(1)\n\nInsertion Sort builds the final sorted array one item at a time. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort.\n\nHow it works:\n1. Start with second element (assume first is sorted)\n2. Compare key element with elements in sorted portion\n3. Shift all larger elements one position right\n4. Insert key at correct position\n5. Repeat for all elements\n\nBest Case: O(n) - when array is already sorted\nWorst Case: O(n²) - when array is reverse sorted\nAverage Case: O(n²)\n\nStable: Yes\nIn-place: Yes\nGood for: Small datasets or nearly sorted data</string>
+
+    <string name="theory_selection_sort">Selection Sort\n\nTime Complexity: O(n²)\nSpace Complexity: O(1)\n\nSelection Sort divides the input list into two parts: a sorted portion at the left end and an unsorted portion at the right end. Initially, the sorted portion is empty and the unsorted portion is the entire list.\n\nHow it works:\n1. Find the minimum element in unsorted portion\n2. Swap it with the first unsorted element\n3. Move boundary between sorted and unsorted portions one element to the right\n4. Repeat until entire array is sorted\n\nBest Case: O(n²)\nWorst Case: O(n²)\nAverage Case: O(n²)\n\nStable: No (typical implementation)\nIn-place: Yes\nMinimizes number of swaps: Only n-1 swaps needed</string>
+
+    <string name="theory_quick_sort">Quick Sort\n\nTime Complexity: O(n log n) average\nSpace Complexity: O(log n)\n\nQuick Sort is a highly efficient divide-and-conquer sorting algorithm. It works by selecting a \'pivot\' element and partitioning the array around the pivot.\n\nHow it works:\n1. Choose a pivot element from the array\n2. Partition: reorder array so elements smaller than pivot come before it, larger elements come after\n3. Recursively apply above steps to sub-arrays\n\nBest Case: O(n log n)\nWorst Case: O(n²) - when pivot is always smallest or largest element\nAverage Case: O(n log n)\n\nStable: No (typical implementation)\nIn-place: Yes\nVery fast in practice: One of the fastest sorting algorithms for average case</string>
+
+    <string name="theory_merge_sort">Merge Sort\n\nTime Complexity: O(n log n)\nSpace Complexity: O(n)\n\nMerge Sort is a divide-and-conquer algorithm that divides the input array into two halves, recursively sorts them, and then merges the two sorted halves.\n\nHow it works:\n1. Divide array into two halves\n2. Recursively sort both halves\n3. Merge the two sorted halves into one sorted array\n\nMerging process:\n- Compare elements from both halves\n- Place smaller element in result array\n- Continue until all elements are merged\n\nBest Case: O(n log n)\nWorst Case: O(n log n)\nAverage Case: O(n log n)\n\nStable: Yes\nIn-place: No (requires extra space)\nGuaranteed O(n log n): Unlike QuickSort, always performs well</string>
+
+    <string name="theory_heap_sort">Heap Sort\n\nTime Complexity: O(n log n)\nSpace Complexity: O(1)\n\nHeap Sort is a comparison-based sorting algorithm that uses a binary heap data structure. It divides input into sorted and unsorted regions, and iteratively shrinks the unsorted region by extracting the largest element.\n\nHow it works:\n1. Build a max heap from input data\n2. Swap root (maximum) with last element\n3. Reduce heap size by 1\n4. Heapify the root\n5. Repeat steps 2-4 until heap size is 1\n\nHeap property:\n- Max Heap: Parent ≥ Children\n- Tree is complete binary tree\n\nBest Case: O(n log n)\nWorst Case: O(n log n)\nAverage Case: O(n log n)\n\nStable: No\nIn-place: Yes\nGuaranteed O(n log n) with O(1) space</string>
+</resources>
