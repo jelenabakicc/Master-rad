@@ -21,24 +21,20 @@ public class SelectionSort implements SortingAlgorithm {
         for (int i = 0; i < n - 1; i++) {
             int minIndex = i;
 
-            // Find minimum element in unsorted portion
             for (int j = i + 1; j < n; j++) {
-                // Record comparison step
-                steps.add(new SortStep(arr.clone(), minIndex, j, SortStep.StepType.COMPARE));
+                steps.add(new SortStep(arr.clone(), minIndex, j, SortStep.StepType.COMPARE, minIndex, true));
 
                 if (arr[j] < arr[minIndex]) {
                     minIndex = j;
                 }
             }
 
-            // Swap minimum element with first element of unsorted portion
             if (minIndex != i) {
                 int temp = arr[i];
                 arr[i] = arr[minIndex];
                 arr[minIndex] = temp;
 
-                // Record swap step
-                steps.add(new SortStep(arr.clone(), i, minIndex, SortStep.StepType.SWAP));
+                steps.add(new SortStep(arr.clone(), i, minIndex, SortStep.StepType.SWAP, minIndex, true));
             }
         }
 

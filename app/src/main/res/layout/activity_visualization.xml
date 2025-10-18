@@ -11,12 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Array Length Input -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="4dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,16 +33,55 @@
             android:hint="10"
             android:maxLength="3"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
         <Button
             android:id="@+id/btn_generate_random"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/generate_random"
-            android:layout_marginStart="8dp"/>
+            android:textSize="11sp"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_generate_gaussian"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/generate_gaussian"
+            android:textSize="11sp"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_generate_sorted"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/generate_sorted"
+            android:textSize="11sp"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_generate_reversed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/generate_reversed"
+            android:textSize="11sp"
+            android:padding="8dp"/>
 
     </LinearLayout>
 
-    <!-- Custom Array Input -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,7 +112,6 @@
         android:layout_weight="1"
         android:layout_marginBottom="8dp"/>
 
-    <!-- Key Value and Comparison Display -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -170,5 +207,13 @@
             android:layout_marginStart="8dp"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_benchmark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/benchmark_array"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/>
 
 </LinearLayout>

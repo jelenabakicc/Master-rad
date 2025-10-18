@@ -1,22 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sorting Visualizer</string>
+    <string name="select_language">Select Language:</string>
     <string name="visualize_button">Visualize Algorithms</string>
     <string name="performance_button">Performance Analysis</string>
     <string name="select_algorithm">Select Algorithm</string>
     <string name="array_size">Array Size</string>
     <string name="start_sort">Start</string>
     <string name="pause_sort">Pause</string>
+    <string name="resume_sort">Resume</string>
     <string name="reset_sort">Reset</string>
     <string name="speed">Speed</string>
     <string name="array_length">Array Length</string>
     <string name="custom_array">Custom Array (comma-separated)</string>
-    <string name="generate_random">Generate Random</string>
+    <string name="generate_random">Random</string>
+    <string name="generate_gaussian">Gaussian</string>
+    <string name="generate_sorted">Sorted</string>
+    <string name="generate_reversed">Reversed</string>
     <string name="set_array">Set Array</string>
+    <string name="benchmark_array">Benchmark This Array</string>
     <string name="performance_analysis">Performance Analysis</string>
     <string name="run_benchmark">Run Benchmark</string>
     <string name="show_theory">Show Theory</string>
     <string name="show_performance">Show Performance</string>
+
+    <!-- Toast Messages -->
+    <string name="error_stop_sorting_first">Please stop current sorting first</string>
+    <string name="error_array_length_range">Please enter array length between 1 and 100</string>
+    <string name="error_enter_array_values">Please enter array values</string>
+    <string name="error_invalid_array_format">Invalid array format. Use comma-separated numbers</string>
+    <string name="error_sorting_in_progress">Sorting already in progress</string>
+    <string name="error_no_sorting_in_progress">No sorting in progress</string>
+    <string name="error_invalid_array_format_short">Invalid array format</string>
+
+    <!-- Chart Labels -->
+    <string name="chart_execution_time">Execution Time (ms)</string>
+    <string name="chart_number_of_swaps">Number of Swaps</string>
+    <string name="chart_number_of_comparisons">Number of Comparisons</string>
+    <string name="chart_title_execution_time">Execution Time (ms)</string>
+    <string name="chart_title_swaps">Number of Swaps</string>
+    <string name="chart_title_comparisons">Number of Comparisons</string>
+    <string name="unit_milliseconds">ms</string>
+    <string name="unit_swaps">swaps</string>
+    <string name="unit_comparisons">comparisons</string>
 
     <!-- Algorithm Theory Texts -->
     <string name="theory_bubble_sort">Bubble Sort\n\nTime Complexity: O(n²)\nSpace Complexity: O(1)\n\nBubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order. The pass through the list is repeated until the list is sorted.\n\nHow it works:\n1. Compare adjacent elements\n2. Swap if they are in wrong order\n3. Repeat for all elements\n4. After each pass, the largest element "bubbles up" to its correct position\n\nBest Case: O(n) - when array is already sorted\nWorst Case: O(n²) - when array is reverse sorted\nAverage Case: O(n²)\n\nStable: Yes\nIn-place: Yes</string>

@@ -1,7 +1,11 @@
 package com.example.vizualizatorsortiranja;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Locale;
 import com.example.vizualizatorsortiranja.algorithms.BubbleSort;
 import com.example.vizualizatorsortiranja.algorithms.InsertionSort;
 import com.example.vizualizatorsortiranja.algorithms.SelectionSort;
@@ -33,10 +39,14 @@ public class VisualizationActivity extends AppCompatActivity {
     private EditText editArrayLength;
     private EditText editCustomArray;
     private Button btnGenerateRandom;
+    private Button btnGenerateGaussian;
+    private Button btnGenerateSorted;
+    private Button btnGenerateReversed;
     private Button btnSetArray;
     private Button btnStart;
     private Button btnPause;
     private Button btnReset;
+    private Button btnBenchmark;
     private SeekBar seekBarSpeed;
     private TextView textSpeedValue;
     private TextView textKeyValue;
@@ -48,31 +58,39 @@ public class VisualizationActivity extends AppCompatActivity {
     private int currentStep = 0;
     private boolean isPaused = false;
     private boolean isSorting = false;
+    private boolean isSortingComplete = false;
     private Handler handler = new Handler();
-    private static final int BASE_DELAY = 500; // base milliseconds between steps
-    private int animationDelay = BASE_DELAY; // current delay (adjustable)
+    private static final int BASE_DELAY = 50; // base milliseconds between steps
+    private int animationDelay = BASE_DELAY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
+        String savedLanguage = preferences.getString("Language", "en");
+        setLocale(savedLanguage);
+
         setContentView(R.layout.activity_visualization);
 
-        // Initialize views
         arrayBarView = findViewById(R.id.array_bar_view);
         spinnerAlgorithm = findViewById(R.id.spinner_algorithm);
         editArrayLength = findViewById(R.id.edit_array_length);
         editCustomArray = findViewById(R.id.edit_custom_array);
         btnGenerateRandom = findViewById(R.id.btn_generate_random);
+        btnGenerateGaussian = findViewById(R.id.btn_generate_gaussian);
+        btnGenerateSorted = findViewById(R.id.btn_generate_sorted);
+        btnGenerateReversed = findViewById(R.id.btn_generate_reversed);
         btnSetArray = findViewById(R.id.btn_set_array);
         btnStart = findViewById(R.id.btn_start);
         btnPause = findViewById(R.id.btn_pause);
         btnReset = findViewById(R.id.btn_reset);
+        btnBenchmark = findViewById(R.id.btn_benchmark);
         seekBarSpeed = findViewById(R.id.seekbar_speed);
         textSpeedValue = findViewById(R.id.text_speed_value);
         textKeyValue = findViewById(R.id.text_key_value);
         textCompareValues = findViewById(R.id.text_compare_values);
 
-        // Initialize algorithms
         algorithms = new SortingAlgorithm[] {
             new BubbleSort(),
             new InsertionSort(),
@@ -82,7 +100,6 @@ public class VisualizationActivity extends AppCompatActivity {
             new HeapSort()
         };
 
-        // Setup spinner
         String[] algorithmNames = new String[algorithms.length];
         for (int i = 0; i < algorithms.length; i++) {
             algorithmNames[i] = algorithms[i].getName();
@@ -92,24 +109,33 @@ public class VisualizationActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerAlgorithm.setAdapter(adapter);
 
-        // Set default array
+        // Hide benchmark button when algorithm changes
+        spinnerAlgorithm.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+                isSortingComplete = false;
+                btnBenchmark.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+            }
+        });
+
         originalArray = ArrayGenerator.generateRandom(10, 100);
         arrayBarView.setArray(originalArray);
 
-        // Setup speed SeekBar
         seekBarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // Map progress (0-100) to speed multiplier (0.1x to 5x)
-                // Progress 50 = 1x speed (BASE_DELAY = 500ms)
-                // Progress 0 = 5x slower (2500ms)
-                // Progress 100 = 10x faster (50ms)
+                // Progress 50 = 1x speed (BASE_DELAY = 50ms)
+                // Progress 0 = 5x slower (250ms)
+                // Progress 100 = 10x faster (5ms)
                 float speedMultiplier;
                 if (progress < 50) {
-                    // Slower: 0-49 maps to 5x-1x slower (2500ms to 500ms)
                     speedMultiplier = 5.0f - (progress / 50.0f) * 4.0f;
                 } else {
-                    // Faster: 50-100 maps to 1x-10x faster (500ms to 50ms)
                     speedMultiplier = 1.0f / (1.0f + ((progress - 50) / 50.0f) * 9.0f);
                 }
                 animationDelay = (int) (BASE_DELAY * speedMultiplier);
@@ -134,7 +160,7 @@ public class VisualizationActivity extends AppCompatActivity {
         // Generate random array button
         btnGenerateRandom.setOnClickListener(v -> {
             if (isSorting) {
-                Toast.makeText(this, "Please stop current sorting first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_stop_sorting_first), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -142,26 +168,90 @@ public class VisualizationActivity extends AppCompatActivity {
             int length = lengthStr.isEmpty() ? 10 : Integer.parseInt(lengthStr);
 
             if (length < 1 || length > 100) {
-                Toast.makeText(this, "Please enter array length between 1 and 100", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_array_length_range), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             originalArray = ArrayGenerator.generateRandom(length, 100);
             arrayBarView.setArray(originalArray);
-            editCustomArray.setText(""); // Clear custom array field
+            editCustomArray.setText("");
+            isSortingComplete = false;
+            btnBenchmark.setVisibility(View.GONE);
         });
 
-        // Set custom array button
+        btnGenerateGaussian.setOnClickListener(v -> {
+            if (isSorting) {
+                Toast.makeText(this, getString(R.string.error_stop_sorting_first), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String lengthStr = editArrayLength.getText().toString();
+            int length = lengthStr.isEmpty() ? 10 : Integer.parseInt(lengthStr);
+
+            if (length < 1 || length > 100) {
+                Toast.makeText(this, getString(R.string.error_array_length_range), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            originalArray = ArrayGenerator.generateGaussian(length, 100);
+            arrayBarView.setArray(originalArray);
+            editCustomArray.setText("");
+            isSortingComplete = false;
+            btnBenchmark.setVisibility(View.GONE);
+        });
+
+        btnGenerateSorted.setOnClickListener(v -> {
+            if (isSorting) {
+                Toast.makeText(this, getString(R.string.error_stop_sorting_first), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String lengthStr = editArrayLength.getText().toString();
+            int length = lengthStr.isEmpty() ? 10 : Integer.parseInt(lengthStr);
+
+            if (length < 1 || length > 100) {
+                Toast.makeText(this, getString(R.string.error_array_length_range), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            originalArray = ArrayGenerator.generateSorted(length);
+            arrayBarView.setArray(originalArray);
+            editCustomArray.setText("");
+            isSortingComplete = false;
+            btnBenchmark.setVisibility(View.GONE);
+        });
+
+        btnGenerateReversed.setOnClickListener(v -> {
+            if (isSorting) {
+                Toast.makeText(this, getString(R.string.error_stop_sorting_first), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String lengthStr = editArrayLength.getText().toString();
+            int length = lengthStr.isEmpty() ? 10 : Integer.parseInt(lengthStr);
+
+            if (length < 1 || length > 100) {
+                Toast.makeText(this, getString(R.string.error_array_length_range), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            originalArray = ArrayGenerator.generateReverseSorted(length);
+            arrayBarView.setArray(originalArray);
+            editCustomArray.setText("");
+            isSortingComplete = false;
+            btnBenchmark.setVisibility(View.GONE);
+        });
+
         btnSetArray.setOnClickListener(v -> {
             if (isSorting) {
-                Toast.makeText(this, "Please stop current sorting first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_stop_sorting_first), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String arrayStr = editCustomArray.getText().toString().trim();
 
             if (arrayStr.isEmpty()) {
-                Toast.makeText(this, "Please enter array values", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_enter_array_values), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -176,15 +266,16 @@ public class VisualizationActivity extends AppCompatActivity {
                 originalArray = customArray;
                 arrayBarView.setArray(originalArray);
                 editArrayLength.setText(String.valueOf(customArray.length));
+                isSortingComplete = false;
+                btnBenchmark.setVisibility(View.GONE);
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "Invalid array format. Use comma-separated numbers", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_invalid_array_format), Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Start button - begin sorting animation
         btnStart.setOnClickListener(v -> {
             if (isSorting) {
-                Toast.makeText(this, "Sorting already in progress", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_sorting_in_progress), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -193,36 +284,56 @@ public class VisualizationActivity extends AppCompatActivity {
             currentStep = 0;
             isSorting = true;
             isPaused = false;
-            btnPause.setText("Pause");
+            isSortingComplete = false;
+            btnPause.setText(getString(R.string.pause_sort));
+            btnBenchmark.setVisibility(View.GONE);
             playNextStep();
         });
 
-        // Pause button - pause/resume animation
         btnPause.setOnClickListener(v -> {
             if (!isSorting) {
-                Toast.makeText(this, "No sorting in progress", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_no_sorting_in_progress), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             isPaused = !isPaused;
-            btnPause.setText(isPaused ? "Resume" : "Pause");
+            btnPause.setText(isPaused ? getString(R.string.resume_sort) : getString(R.string.pause_sort));
 
             if (!isPaused) {
                 playNextStep();
             }
         });
 
-        // Reset button - restore original array
         btnReset.setOnClickListener(v -> {
             handler.removeCallbacksAndMessages(null);
             isSorting = false;
             isPaused = false;
             currentStep = 0;
-            btnPause.setText("Pause");
+            isSortingComplete = false;
+            btnPause.setText(getString(R.string.pause_sort));
+            btnBenchmark.setVisibility(View.GONE);
             arrayBarView.setArray(originalArray);
             arrayBarView.setHighlightIndices(-1, -1);
-            textKeyValue.setVisibility(TextView.GONE);
+            arrayBarView.setPivotIndex(-1);
+            arrayBarView.setKeyIndex(-1);
+            arrayBarView.setMinIndex(-1);
+            arrayBarView.clearHeapInfo();
             textCompareValues.setVisibility(TextView.GONE);
+        });
+
+        btnBenchmark.setOnClickListener(v -> {
+            StringBuilder arrayStr = new StringBuilder();
+            for (int i = 0; i < originalArray.length; i++) {
+                arrayStr.append(originalArray[i]);
+                if (i < originalArray.length - 1) {
+                    arrayStr.append(",");
+                }
+            }
+
+            Intent intent = new Intent(VisualizationActivity.this, PerformanceActivity.class);
+            intent.putExtra("ARRAY_DATA", arrayStr.toString());
+            intent.putExtra("AUTO_RUN_BENCHMARK", true);
+            startActivity(intent);
         });
     }
 
@@ -230,9 +341,14 @@ public class VisualizationActivity extends AppCompatActivity {
         if (!isSorting || isPaused || sortSteps == null || currentStep >= sortSteps.size()) {
             if (currentStep >= sortSteps.size()) {
                 isSorting = false;
+                isSortingComplete = true;
                 arrayBarView.setHighlightIndices(-1, -1);
-                textKeyValue.setVisibility(TextView.GONE);
+                arrayBarView.setPivotIndex(-1);
+                arrayBarView.setKeyIndex(-1);
+                arrayBarView.setMinIndex(-1);
+                arrayBarView.clearHeapInfo();
                 textCompareValues.setVisibility(TextView.GONE);
+                btnBenchmark.setVisibility(View.VISIBLE);
             }
             return;
         }
@@ -240,21 +356,28 @@ public class VisualizationActivity extends AppCompatActivity {
         SortStep step = sortSteps.get(currentStep);
         arrayBarView.setArray(step.getArrayState());
         arrayBarView.setHighlightIndices(step.getIndex1(), step.getIndex2());
+        arrayBarView.setPivotIndex(step.getPivotIndex());
+        arrayBarView.setKeyIndex(step.getKeyIndex());
+        arrayBarView.setMinIndex(step.getMinIndex());
+
+        if (step.getHeapSize() >= 0) {
+            arrayBarView.setHeapInfo(
+                step.getHeapSize(),
+                step.getHeapParentIndex(),
+                step.getHeapLeftChild(),
+                step.getHeapRightChild()
+            );
+        } else {
+            arrayBarView.clearHeapInfo();
+        }
 
         // Handle helper arrays for Merge Sort
         if (step.getLeftArray() != null && step.getRightArray() != null) {
             arrayBarView.setHelperArrays(step.getLeftArray(), step.getRightArray(),
-                                        step.getLeftHighlight(), step.getRightHighlight());
+                                        step.getLeftHighlight(), step.getRightHighlight(),
+                                        step.getLeftStartPosition(), step.getRightStartPosition());
         } else {
             arrayBarView.clearHelperArrays();
-        }
-
-        // Display key value if present
-        if (step.getKeyValue() != null) {
-            textKeyValue.setText("Key: " + step.getKeyValue());
-            textKeyValue.setVisibility(TextView.VISIBLE);
-        } else {
-            textKeyValue.setVisibility(TextView.GONE);
         }
 
         // Display comparison values if present (for Merge Sort)
@@ -278,5 +401,13 @@ public class VisualizationActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
+    }
+
+    private void setLocale(String languageCode) {
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
     }
 }
