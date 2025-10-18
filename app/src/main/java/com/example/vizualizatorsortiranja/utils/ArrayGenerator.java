@@ -68,4 +68,31 @@ public class ArrayGenerator {
 
         return array;
     }
+
+    /**
+     * Generates an array with Gaussian (normal) distribution.
+     * Values cluster around the middle of the range.
+     * @param size Number of elements
+     * @param maxValue Maximum value for elements
+     * @return Gaussian distributed array
+     */
+    public static int[] generateGaussian(int size, int maxValue) {
+        int[] array = new int[size];
+        Random random = new Random();
+        double mean = maxValue / 2.0;
+        double stdDev = maxValue / 6.0;
+
+        for (int i = 0; i < size; i++) {
+            double gaussian = random.nextGaussian();
+            double value = mean + (gaussian * stdDev);
+
+            int clampedValue = (int) Math.round(value);
+            if (clampedValue < 1) clampedValue = 1;
+            if (clampedValue > maxValue) clampedValue = maxValue;
+
+            array[i] = clampedValue;
+        }
+
+        return array;
+    }
 }

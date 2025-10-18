@@ -18,42 +18,38 @@ public class HeapSort implements SortingAlgorithm {
         int n = array.length;
         int[] arr = array.clone();
 
-        // Build max heap
         for (int i = n / 2 - 1; i >= 0; i--) {
-            heapify(arr, n, i, steps);
+            heapify(arr, n, i, steps, n, SortStep.HeapPhase.BUILD_HEAP);
         }
 
-        // Extract elements from heap one by one
         for (int i = n - 1; i > 0; i--) {
-            // Move current root to end
             int temp = arr[0];
             arr[0] = arr[i];
             arr[i] = temp;
 
-            steps.add(new SortStep(arr.clone(), 0, i, SortStep.StepType.SWAP));
+            steps.add(new SortStep(arr.clone(), 0, i, SortStep.StepType.SWAP, i, SortStep.HeapPhase.EXTRACT_MAX, -1, -1, -1));
 
-            // Heapify the reduced heap
-            heapify(arr, i, 0, steps);
+            heapify(arr, i, 0, steps, i, SortStep.HeapPhase.EXTRACT_MAX);
         }
 
         steps.add(new SortStep(arr.clone(), -1, -1, SortStep.StepType.COMPLETE));
         return steps;
     }
 
-    private void heapify(int[] arr, int n, int i, List<SortStep> steps) {
+    private void heapify(int[] arr, int n, int i, List<SortStep> steps, int heapSize, SortStep.HeapPhase phase) {
         int largest = i;
         int left = 2 * i + 1;
         int right = 2 * i + 2;
 
         if (left < n) {
-            steps.add(new SortStep(arr.clone(), largest, left, SortStep.StepType.COMPARE));
+            steps.add(new SortStep(arr.clone(), largest, left, SortStep.StepType.COMPARE, heapSize, phase, i, left, right < n ? right : -1));
             if (arr[left] > arr[largest]) {
                 largest = left;
             }
         }
 
         if (right < n) {
-            steps.add(new SortStep(arr.clone(), largest, right, SortStep.StepType.COMPARE));
+            steps.add(new SortStep(arr.clone(), largest, right, SortStep.StepType.COMPARE, heapSize, phase, i, left < n ? left : -1, right));
             if (arr[right] > arr[largest]) {
                 largest = right;
             }
@@ -64,9 +60,9 @@ public class HeapSort implements SortingAlgorithm {
             arr[i] = arr[largest];
             arr[largest] = temp;
 
-            steps.add(new SortStep(arr.clone(), i, largest, SortStep.StepType.SWAP));
+            steps.add(new SortStep(arr.clone(), i, largest, SortStep.StepType.SWAP, heapSize, phase, i, left < n ? left : -1, right < n ? right : -1));
 
-            heapify(arr, n, largest, steps);
+            heapify(arr, n, largest, steps, heapSize, phase);
         }
     }
 
@@ -75,12 +71,10 @@ public class HeapSort implements SortingAlgorithm {
         long startTime = System.nanoTime();
         int n = array.length;
 
-        // Build max heap
         for (int i = n / 2 - 1; i >= 0; i--) {
             heapifyPerformance(array, n, i);
         }
 
-        // Extract elements from heap one by one
         for (int i = n - 1; i > 0; i--) {
             int temp = array[0];
             array[0] = array[i];
@@ -123,15 +117,13 @@ public class HeapSort implements SortingAlgorithm {
     public PerformanceResult sortForPerformanceWithSwaps(int[] array) {
         long startTime = System.nanoTime();
         int n = array.length;
-        int[] swapCounter = {0}; // Use array to pass by reference
+        int[] swapCounter = {0};
         int[] comparisonCounter = {0};
 
-        // Build max heap
         for (int i = n / 2 - 1; i >= 0; i--) {
             heapifyPerformanceWithSwaps(array, n, i, swapCounter, comparisonCounter);
         }
 
-        // Extract elements from heap one by one
         for (int i = n - 1; i > 0; i--) {
             int temp = array[0];
             array[0] = array[i];

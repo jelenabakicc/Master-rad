@@ -21,36 +21,28 @@ public class InsertionSort implements SortingAlgorithm {
         for (int i = 1; i < n; i++) {
             int key = arr[i];
             int j = i - 1;
-            int keyPosition = i; // Track where the key currently is
+            int keyPosition = i;
 
-            // Show comparisons while finding the insertion position
             while (j >= 0 && arr[j] > key) {
-                // Temporarily place key at its current position for visualization
                 int[] visualArray = arr.clone();
                 visualArray[keyPosition] = key;
 
-                // Record comparison step with key visible at current position
-                steps.add(new SortStep(visualArray, j, keyPosition, SortStep.StepType.COMPARE, key));
+                steps.add(new SortStep(visualArray, j, keyPosition, SortStep.StepType.COMPARE, key, keyPosition, true));
 
-                // Shift element to the right
                 arr[j + 1] = arr[j];
-                keyPosition = j; // Key moves left
+                keyPosition = j;
 
-                // Show swap step after shifting, with key at new position
                 int[] swapArray = arr.clone();
                 swapArray[keyPosition] = key;
-                steps.add(new SortStep(swapArray, keyPosition, j + 1, SortStep.StepType.SWAP, key));
+                steps.add(new SortStep(swapArray, keyPosition, j + 1, SortStep.StepType.SWAP, key, keyPosition, true));
 
                 j--;
             }
 
-            // Insert key at correct position
             arr[keyPosition] = key;
 
-            // Show final insertion result only if we didn't already show steps
             if (keyPosition == i - 1 && arr[i - 1] > key) {
-                // Key moved by only one position, show final state
-                steps.add(new SortStep(arr.clone(), keyPosition, keyPosition, SortStep.StepType.SWAP, key));
+                steps.add(new SortStep(arr.clone(), keyPosition, keyPosition, SortStep.StepType.SWAP, key, keyPosition, true));
             }
         }
 
@@ -99,7 +91,6 @@ public class InsertionSort implements SortingAlgorithm {
                 swapCount++; // Count shifts as swaps
                 j--;
             }
-            // Count the final comparison that exits the loop (if j >= 0)
             if (j >= 0) {
                 comparisonCount++;
             }

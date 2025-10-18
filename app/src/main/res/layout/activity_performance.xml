@@ -20,7 +20,79 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Custom Array Input -->
+    <LinearLayout
+        android:id="@+id/layout_array_length"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/array_length"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"/>
+
+        <EditText
+            android:id="@+id/edit_performance_array_length"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:hint="10"
+            android:maxLength="3"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_generation_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <Button
+            android:id="@+id/btn_perf_generate_random"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/generate_random"
+            android:textSize="11sp"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_perf_generate_gaussian"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/generate_gaussian"
+            android:textSize="11sp"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_perf_generate_sorted"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/generate_sorted"
+            android:textSize="11sp"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_perf_generate_reversed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/generate_reversed"
+            android:textSize="11sp"
+            android:padding="8dp"/>
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +116,6 @@
 
     </LinearLayout>
 
-    <!-- Toggle Button -->
     <Button
         android:id="@+id/btn_toggle_view"
         android:layout_width="match_parent"
@@ -52,7 +123,6 @@
         android:text="@string/show_theory"
         android:layout_marginBottom="16dp"/>
 
-    <!-- ViewFlipper to switch between Theory and Chart -->
     <ViewFlipper
         android:id="@+id/view_flipper"
         android:layout_width="match_parent"
@@ -84,40 +154,23 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Execution Time Chart -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Execution Time (ms)"
+                    android:text="@string/chart_title_swaps"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:padding="8dp"/>
-
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/performance_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"/>
-
-                <!-- Swap Count Chart -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Number of Swaps"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:layout_marginTop="16dp"/>
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/swap_chart"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"/>
 
-                <!-- Comparison Count Chart -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Number of Comparisons"
+                    android:text="@string/chart_title_comparisons"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:padding="8dp"
@@ -125,6 +178,20 @@
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/comparison_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chart_title_execution_time"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:layout_marginTop="16dp"/>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/performance_chart"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"/>
 

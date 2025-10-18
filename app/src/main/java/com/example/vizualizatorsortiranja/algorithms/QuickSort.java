@@ -34,7 +34,7 @@ public class QuickSort implements SortingAlgorithm {
         int i = low - 1;
 
         for (int j = low; j < high; j++) {
-            steps.add(new SortStep(arr.clone(), j, high, SortStep.StepType.COMPARE));
+            steps.add(new SortStep(arr.clone(), j, high, SortStep.StepType.COMPARE, high));
 
             if (arr[j] < pivot) {
                 i++;
@@ -43,7 +43,7 @@ public class QuickSort implements SortingAlgorithm {
                 arr[j] = temp;
 
                 if (i != j) {
-                    steps.add(new SortStep(arr.clone(), i, j, SortStep.StepType.SWAP));
+                    steps.add(new SortStep(arr.clone(), i, j, SortStep.StepType.SWAP, high));
                 }
             }
         }
@@ -52,7 +52,7 @@ public class QuickSort implements SortingAlgorithm {
         arr[i + 1] = arr[high];
         arr[high] = temp;
 
-        steps.add(new SortStep(arr.clone(), i + 1, high, SortStep.StepType.SWAP));
+        steps.add(new SortStep(arr.clone(), i + 1, high, SortStep.StepType.SWAP, high));
         return i + 1;
     }
 
@@ -99,7 +99,7 @@ public class QuickSort implements SortingAlgorithm {
     @Override
     public PerformanceResult sortForPerformanceWithSwaps(int[] array) {
         long startTime = System.nanoTime();
-        int[] swapCounter = {0}; // Use array to pass by reference
+        int[] swapCounter = {0};
         int[] comparisonCounter = {0};
         quickSortPerformanceWithSwaps(array, 0, array.length - 1, swapCounter, comparisonCounter);
         long executionTime = System.nanoTime() - startTime;

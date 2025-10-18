@@ -36,7 +36,6 @@ public class CustomMarkerView extends MarkerView {
         this.algorithmNames = algorithmNames;
         this.unit = unit;
 
-        // Use 5 decimal places for milliseconds, 0 for others
         if (unit.equals("ms")) {
             this.decimalFormat = new DecimalFormat("0.00000");
         } else {
@@ -61,7 +60,6 @@ public class CustomMarkerView extends MarkerView {
 
     @Override
     public MPPointF getOffset() {
-        // Center the marker above the bar
         return new MPPointF(-(getWidth() / 2f), -getHeight());
     }
 }

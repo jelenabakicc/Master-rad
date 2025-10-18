@@ -44,10 +44,8 @@ public class MergeSort implements SortingAlgorithm {
         int i = 0, j = 0, k = left;
 
         while (i < n1 && j < n2) {
-            // Record comparison step with helper arrays visible
-            // Show comparison using helper array indices (these are always correct)
             steps.add(new SortStep(arr.clone(), k, k, SortStep.StepType.COMPARE,
-                                   leftArray.clone(), rightArray.clone(), i, j));
+                                   leftArray.clone(), rightArray.clone(), i, j, left, mid + 1));
 
             if (leftArray[i] <= rightArray[j]) {
                 arr[k] = leftArray[i];
@@ -57,16 +55,15 @@ public class MergeSort implements SortingAlgorithm {
                 j++;
             }
 
-            // Record swap step showing the merged result with updated array
             steps.add(new SortStep(arr.clone(), k, k, SortStep.StepType.SWAP,
-                                   leftArray.clone(), rightArray.clone(), i, j));
+                                   leftArray.clone(), rightArray.clone(), i, j, left, mid + 1));
             k++;
         }
 
     while (i < n1) {
             arr[k] = leftArray[i];
             steps.add(new SortStep(arr.clone(), k, k, SortStep.StepType.SWAP,
-                                   leftArray.clone(), rightArray.clone(), i, -1));
+                                   leftArray.clone(), rightArray.clone(), i, -1, left, mid + 1));
             i++;
             k++;
         }
@@ -74,7 +71,7 @@ public class MergeSort implements SortingAlgorithm {
         while (j < n2) {
             arr[k] = rightArray[j];
             steps.add(new SortStep(arr.clone(), k, k, SortStep.StepType.SWAP,
-                                   leftArray.clone(), rightArray.clone(), -1, j));
+                                   leftArray.clone(), rightArray.clone(), -1, j, left, mid + 1));
             j++;
             k++;
         }
@@ -133,7 +130,7 @@ public class MergeSort implements SortingAlgorithm {
     @Override
     public PerformanceResult sortForPerformanceWithSwaps(int[] array) {
         long startTime = System.nanoTime();
-        int[] swapCounter = {0}; // Use array to pass by reference
+        int[] swapCounter = {0};
         int[] comparisonCounter = {0};
         mergeSortPerformanceWithSwaps(array, 0, array.length - 1, swapCounter, comparisonCounter);
         long executionTime = System.nanoTime() - startTime;
@@ -168,7 +165,7 @@ public class MergeSort implements SortingAlgorithm {
             } else {
                 arr[k++] = rightArray[j++];
             }
-            swapCounter[0]++; // Count array placements as swaps
+            swapCounter[0]++;
         }
 
         while (i < n1) {
